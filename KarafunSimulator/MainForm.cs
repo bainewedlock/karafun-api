@@ -57,7 +57,7 @@ namespace KarafunSimulator
       return Receive_Xml_Message(xml).ToString();
     }
 
-    private static XElement Receive_Xml_Message(XElement xml)
+    static XElement Receive_Xml_Message(XElement xml)
     {
       var action_type = xml.Attribute("type").Value;
 
@@ -85,7 +85,31 @@ namespace KarafunSimulator
         new XElement("pitch", 10),
         new XElement("tempo", 110),
         new XElement("queue",
-          new XElement("item")));
+          new[] {
+            Example_Song1(),
+            Example_Song2() }));
+    }
+
+    static XElement Example_Song1()
+    {
+      var item = new XElement("item",
+        new XElement("title", "Take This Life"),
+        new XElement("artist", "In Flames"),
+        new XElement("year", "2006"),
+        new XElement("duration", 225));
+      item.SetAttributeValue("id", 1);
+      return item;
+    }
+
+    static XElement Example_Song2()
+    {
+      var item = new XElement("item",
+      new XElement("title", "A moment forever"),
+        new XElement("artist", "Volbeat"),
+        new XElement("year", "2007"),
+        new XElement("duration", 222));
+      item.SetAttributeValue("id", 2);
+      return item;
     }
 
     void Log(string message)
