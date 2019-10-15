@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +25,9 @@ namespace KarafunApi
           await stream.WriteAsync(request_bytes, 0, request_bytes.Length);
           var buffer = new byte[1000];
           var response_bytes = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+          File.WriteAllBytes("response_dump.txt", buffer.Take(response_bytes).ToArray());
+
           var response_string = Encoding.ASCII.GetString(buffer, 0, response_bytes);
           return XElement.Parse(response_string);
         }
