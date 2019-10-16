@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,13 +20,12 @@ namespace DemoClient
     public MainForm()
     {
       InitializeComponent();
-      ControlsPanel.Enabled = false;
+      Enable_Controls(false);
     }
 
     async void ConnectButton_Click(object sender, EventArgs e)
     {
-      ConnectButton.Enabled = false;
-      ControlsPanel.Enabled = true;
+      Enable_Controls(true);
 
       using (ws = new WebSocket(PlayerAddress))
       {
@@ -50,6 +50,14 @@ namespace DemoClient
       }
     }
 
+    void Enable_Controls(bool connected)
+    {
+      ConnectButton.Enabled = !connected;
+      ControlsPanel.Enabled = connected;
+      SongSuchenButton.Enabled = connected;
+      SuchergebnisAbspielenButton.Enabled = connected;
+    }
+
     void Route_Message(XElement message)
     {
       ResponseTextBox.Text = message.ToString();
@@ -57,7 +65,20 @@ namespace DemoClient
       switch (message.Name.LocalName)
       {
         case "status": Process_Status(message); break;
+        case "list": Process_List(message); break;
       }
+    }
+
+    void Process_List(XElement message)
+    {
+      SongListbox.Items.Clear();
+
+      foreach (var item in message.Elements("item"))
+      {
+        SongListbox.Items.Add(Song.Parse(item));
+      }
+
+      SongListbox.DisplayMember = "display_text";
     }
 
     void Process_Status(XElement message)
@@ -99,35 +120,10 @@ namespace DemoClient
       Queue_Changed.Set();
     }
 
-    async void GetStatusButton_Click(object sender, EventArgs e)
-    {
-      var request = new XElement("action");
-      request.SetAttributeValue("type", "getStatus");
-
-      await Send(request);
-    }
-
-    async void PlayButton_Click(object sender, EventArgs e)
-    {
-      var request = new XElement("action");
-      request.SetAttributeValue("type", "play");
-
-      await Send(request);
-    }
-
-    async void PauseButton_Click(object sender, EventArgs e)
-    {
-      var request = new XElement("action");
-      request.SetAttributeValue("type", "pause");
-
-      await Send(request);
-    }
-
     async Task Send(XElement request)
     {
       PlayButton.Enabled = false;
       PauseButton.Enabled = false;
-
       ResponseTextBox.Text = "";
 
       string request_string = request.ToString();
@@ -136,6 +132,61 @@ namespace DemoClient
       var finish_flag = new AsyncAutoResetEvent();
       ws.SendAsync(request_string, result => finish_flag.Set());
       await finish_flag.WaitAsync();
+    }
+
+    async void GetStatusButton_Click(object sender, EventArgs e)
+    {
+      var request = new XElement("action");
+      request.SetAttributeValue("type", "getStatus");
+      await Send(request);
+    }
+
+    async void PlayButton_Click(object sender, EventArgs e)
+    {
+      var request = new XElement("action");
+      request.SetAttributeValue("type", "play");
+      await Send(request);
+    }
+
+    async void PauseButton_Click(object sender, EventArgs e)
+    {
+      var request = new XElement("action");
+      request.SetAttributeValue("type", "pause");
+      await Send(request);
+    }
+
+    async void SongSuchenButton_Click(object sender, EventArgs e)
+    {
+      var search_string = SongSuchenTextbox.Text;
+      var request = new XElement("action");
+      request.SetAttributeValue("type", "search");
+      request.SetAttributeValue("offset", "0");
+      request.SetAttributeValue("limit", "100");
+      request.SetValue(search_string);
+      await Send(request);
+    }
+
+    async void SuchergebnisAbspielenButton_Click(object sender, EventArgs e)
+    {
+      var selected_song = SongListbox.SelectedItem as Song;
+
+      // clear queue
+      var clearQueue = new XElement("action");
+      clearQueue.SetAttributeValue("type", "clearQueue");
+      await Send(clearQueue);
+
+      // add selected song to queue
+      var add_position = 0;
+      var addToQueue = new XElement("action");
+      addToQueue.SetAttributeValue("type", "addToQueue");
+      addToQueue.SetAttributeValue("song", $"{selected_song.id}");
+      addToQueue.SetValue(add_position);
+      await Send(addToQueue);
+    }
+
+    void SongListbox_SelectedValueChanged(object sender, EventArgs e)
+    {
+      SuchergebnisAbspielenButton.Enabled = SongListbox.SelectedItem != null;
     }
   }
 }
