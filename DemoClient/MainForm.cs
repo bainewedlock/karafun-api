@@ -41,7 +41,7 @@ namespace DemoClient
         while (true)
         {
           await Queue_Changed.WaitAsync();
-          if (Incoming_Messages.TryDequeue(out var message))
+          while (Incoming_Messages.TryDequeue(out var message))
           {
             try
             {
