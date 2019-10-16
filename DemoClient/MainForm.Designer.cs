@@ -35,11 +35,14 @@
       this.label2 = new System.Windows.Forms.Label();
       this.PlayButton = new System.Windows.Forms.Button();
       this.PauseButton = new System.Windows.Forms.Button();
+      this.ConnectButton = new System.Windows.Forms.Button();
+      this.ControlsPanel = new System.Windows.Forms.Panel();
+      this.ControlsPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // GetStatusButton
       // 
-      this.GetStatusButton.Location = new System.Drawing.Point(12, 12);
+      this.GetStatusButton.Location = new System.Drawing.Point(3, 3);
       this.GetStatusButton.Name = "GetStatusButton";
       this.GetStatusButton.Size = new System.Drawing.Size(75, 23);
       this.GetStatusButton.TabIndex = 0;
@@ -51,44 +54,44 @@
       // 
       this.RequestTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-      this.RequestTextBox.Location = new System.Drawing.Point(12, 73);
+      this.RequestTextBox.Location = new System.Drawing.Point(12, 301);
       this.RequestTextBox.Multiline = true;
       this.RequestTextBox.Name = "RequestTextBox";
-      this.RequestTextBox.Size = new System.Drawing.Size(239, 365);
+      this.RequestTextBox.Size = new System.Drawing.Size(239, 308);
       this.RequestTextBox.TabIndex = 1;
       // 
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(12, 57);
+      this.label1.Location = new System.Drawing.Point(9, 285);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(47, 13);
+      this.label1.Size = new System.Drawing.Size(70, 13);
       this.label1.TabIndex = 2;
-      this.label1.Text = "Request";
+      this.label1.Text = "Last Request";
       // 
       // ResponseTextBox
       // 
       this.ResponseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.ResponseTextBox.Location = new System.Drawing.Point(257, 73);
+      this.ResponseTextBox.Location = new System.Drawing.Point(257, 301);
       this.ResponseTextBox.Multiline = true;
       this.ResponseTextBox.Name = "ResponseTextBox";
-      this.ResponseTextBox.Size = new System.Drawing.Size(531, 365);
+      this.ResponseTextBox.Size = new System.Drawing.Size(531, 308);
       this.ResponseTextBox.TabIndex = 3;
       // 
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(254, 57);
+      this.label2.Location = new System.Drawing.Point(258, 285);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(55, 13);
+      this.label2.Size = new System.Drawing.Size(119, 13);
       this.label2.TabIndex = 4;
-      this.label2.Text = "Response";
+      this.label2.Text = "Last Incoming Message";
       // 
       // PlayButton
       // 
-      this.PlayButton.Location = new System.Drawing.Point(93, 12);
+      this.PlayButton.Location = new System.Drawing.Point(84, 3);
       this.PlayButton.Name = "PlayButton";
       this.PlayButton.Size = new System.Drawing.Size(75, 23);
       this.PlayButton.TabIndex = 5;
@@ -98,7 +101,7 @@
       // 
       // PauseButton
       // 
-      this.PauseButton.Location = new System.Drawing.Point(174, 12);
+      this.PauseButton.Location = new System.Drawing.Point(165, 3);
       this.PauseButton.Name = "PauseButton";
       this.PauseButton.Size = new System.Drawing.Size(75, 23);
       this.PauseButton.TabIndex = 6;
@@ -106,20 +109,40 @@
       this.PauseButton.UseVisualStyleBackColor = true;
       this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
       // 
+      // ConnectButton
+      // 
+      this.ConnectButton.Location = new System.Drawing.Point(15, 15);
+      this.ConnectButton.Name = "ConnectButton";
+      this.ConnectButton.Size = new System.Drawing.Size(75, 23);
+      this.ConnectButton.TabIndex = 7;
+      this.ConnectButton.Text = "connect";
+      this.ConnectButton.UseVisualStyleBackColor = true;
+      this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+      // 
+      // ControlsPanel
+      // 
+      this.ControlsPanel.Controls.Add(this.GetStatusButton);
+      this.ControlsPanel.Controls.Add(this.PlayButton);
+      this.ControlsPanel.Controls.Add(this.PauseButton);
+      this.ControlsPanel.Location = new System.Drawing.Point(96, 12);
+      this.ControlsPanel.Name = "ControlsPanel";
+      this.ControlsPanel.Size = new System.Drawing.Size(392, 40);
+      this.ControlsPanel.TabIndex = 8;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(800, 450);
-      this.Controls.Add(this.PauseButton);
-      this.Controls.Add(this.PlayButton);
+      this.ClientSize = new System.Drawing.Size(800, 621);
+      this.Controls.Add(this.ControlsPanel);
+      this.Controls.Add(this.ConnectButton);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.ResponseTextBox);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.RequestTextBox);
-      this.Controls.Add(this.GetStatusButton);
       this.Name = "MainForm";
       this.Text = "Demo Client";
+      this.ControlsPanel.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -134,6 +157,8 @@
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Button PlayButton;
     private System.Windows.Forms.Button PauseButton;
+    private System.Windows.Forms.Button ConnectButton;
+    private System.Windows.Forms.Panel ControlsPanel;
   }
 }
 
