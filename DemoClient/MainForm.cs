@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,14 +12,21 @@ namespace DemoClient
   public partial class MainForm : Form
   {
     static readonly string PlayerAddress = ConfigurationManager.AppSettings["PlayerAddress"];
+    static readonly TimeSpan Minimal_Volume_Change_Delay = TimeSpan.FromMilliseconds(200);
     ConcurrentQueue<XElement> Incoming_Messages = new ConcurrentQueue<XElement>();
     AsyncAutoResetEvent Queue_Changed = new AsyncAutoResetEvent();
+    AsyncAutoResetEvent Volume_Changed = new AsyncAutoResetEvent();
     WebSocket ws;
 
     public MainForm()
     {
       InitializeComponent();
       Enable_Controls(false);
+    }
+
+    async void MainForm_Load(object sender, EventArgs e)
+    {
+      await Keep_Updating_Volume();
     }
 
     async void ConnectButton_Click(object sender, EventArgs e)
@@ -60,7 +66,7 @@ namespace DemoClient
 
     void Route_Message(XElement message)
     {
-      ResponseTextBox.Text = message.ToString();
+      ResponseTextBox.Text = $@"{DateTime.Now:HH\:mm\:ss}||{message}".Replace("|", "\r\n");
 
       switch (message.Name.LocalName)
       {
@@ -127,18 +133,11 @@ namespace DemoClient
       ResponseTextBox.Text = "";
 
       string request_string = request.ToString();
-      RequestTextBox.Text = request_string;
+      RequestTextBox.Text = $@"{DateTime.Now:HH\:mm\:ss}||{request_string}".Replace("|", "\r\n");
 
       var finish_flag = new AsyncAutoResetEvent();
       ws.SendAsync(request_string, result => finish_flag.Set());
       await finish_flag.WaitAsync();
-    }
-
-    async void GetStatusButton_Click(object sender, EventArgs e)
-    {
-      var request = new XElement("action");
-      request.SetAttributeValue("type", "getStatus");
-      await Send(request);
     }
 
     async void PlayButton_Click(object sender, EventArgs e)
@@ -156,6 +155,11 @@ namespace DemoClient
     }
 
     async void SongSuchenButton_Click(object sender, EventArgs e)
+    {
+      await SongSuchen();
+    }
+
+    async Task SongSuchen()
     {
       var search_string = SongSuchenTextbox.Text;
       var request = new XElement("action");
@@ -187,6 +191,35 @@ namespace DemoClient
     void SongListbox_SelectedValueChanged(object sender, EventArgs e)
     {
       SuchergebnisAbspielenButton.Enabled = SongListbox.SelectedItem != null;
+    }
+
+    void VolumeTrackbar_Scroll(object sender, EventArgs e)
+    {
+      Volume_Changed.Set();
+    }
+
+    async Task Keep_Updating_Volume()
+    {
+      while (true)
+      {
+        await Volume_Changed.WaitAsync();
+
+        var setVolume = new XElement("action");
+        setVolume.SetAttributeValue("type", "setVolume");
+        setVolume.SetAttributeValue("volume_type", "general");
+        setVolume.SetValue(VolumeTrackbar.Value);
+        await Send(setVolume);
+
+        await Task.Delay(Minimal_Volume_Change_Delay);
+      }
+    }
+
+    async void SongSuchenTextbox_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.KeyData == Keys.Enter && SongSuchenButton.Enabled)
+      {
+        await SongSuchen();
+      }
     }
   }
 }

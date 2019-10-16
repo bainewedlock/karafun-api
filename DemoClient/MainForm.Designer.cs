@@ -28,13 +28,15 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.GetStatusButton = new System.Windows.Forms.Button();
       this.PlayButton = new System.Windows.Forms.Button();
       this.PauseButton = new System.Windows.Forms.Button();
       this.ConnectButton = new System.Windows.Forms.Button();
       this.ControlsPanel = new System.Windows.Forms.Panel();
+      this.VolumeTrackbar = new System.Windows.Forms.TrackBar();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
+      this.SuchergebnisAbspielenButton = new System.Windows.Forms.Button();
+      this.SongListbox = new System.Windows.Forms.ListBox();
       this.label5 = new System.Windows.Forms.Label();
       this.SongSuchenTextbox = new System.Windows.Forms.TextBox();
       this.SongSuchenButton = new System.Windows.Forms.Button();
@@ -48,28 +50,17 @@
       this.label2 = new System.Windows.Forms.Label();
       this.label1 = new System.Windows.Forms.Label();
       this.ResponseTextBox = new System.Windows.Forms.TextBox();
-      this.SongListbox = new System.Windows.Forms.ListBox();
-      this.SuchergebnisAbspielenButton = new System.Windows.Forms.Button();
       this.ControlsPanel.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.VolumeTrackbar)).BeginInit();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.tabPage2.SuspendLayout();
       this.SuspendLayout();
       // 
-      // GetStatusButton
-      // 
-      this.GetStatusButton.Location = new System.Drawing.Point(3, 3);
-      this.GetStatusButton.Name = "GetStatusButton";
-      this.GetStatusButton.Size = new System.Drawing.Size(75, 23);
-      this.GetStatusButton.TabIndex = 0;
-      this.GetStatusButton.Text = "getStatus";
-      this.GetStatusButton.UseVisualStyleBackColor = true;
-      this.GetStatusButton.Click += new System.EventHandler(this.GetStatusButton_Click);
-      // 
       // PlayButton
       // 
-      this.PlayButton.Location = new System.Drawing.Point(84, 3);
+      this.PlayButton.Location = new System.Drawing.Point(10, 4);
       this.PlayButton.Name = "PlayButton";
       this.PlayButton.Size = new System.Drawing.Size(75, 23);
       this.PlayButton.TabIndex = 5;
@@ -79,7 +70,7 @@
       // 
       // PauseButton
       // 
-      this.PauseButton.Location = new System.Drawing.Point(165, 3);
+      this.PauseButton.Location = new System.Drawing.Point(91, 4);
       this.PauseButton.Name = "PauseButton";
       this.PauseButton.Size = new System.Drawing.Size(75, 23);
       this.PauseButton.TabIndex = 6;
@@ -99,13 +90,23 @@
       // 
       // ControlsPanel
       // 
-      this.ControlsPanel.Controls.Add(this.GetStatusButton);
+      this.ControlsPanel.Controls.Add(this.VolumeTrackbar);
       this.ControlsPanel.Controls.Add(this.PlayButton);
       this.ControlsPanel.Controls.Add(this.PauseButton);
       this.ControlsPanel.Location = new System.Drawing.Point(96, 12);
       this.ControlsPanel.Name = "ControlsPanel";
-      this.ControlsPanel.Size = new System.Drawing.Size(392, 40);
+      this.ControlsPanel.Size = new System.Drawing.Size(607, 53);
       this.ControlsPanel.TabIndex = 8;
+      // 
+      // VolumeTrackbar
+      // 
+      this.VolumeTrackbar.Location = new System.Drawing.Point(172, 5);
+      this.VolumeTrackbar.Maximum = 100;
+      this.VolumeTrackbar.Name = "VolumeTrackbar";
+      this.VolumeTrackbar.Size = new System.Drawing.Size(322, 45);
+      this.VolumeTrackbar.TabIndex = 7;
+      this.VolumeTrackbar.Value = 100;
+      this.VolumeTrackbar.Scroll += new System.EventHandler(this.VolumeTrackbar_Scroll);
       // 
       // tabControl1
       // 
@@ -136,6 +137,28 @@
       this.tabPage1.Text = "Playback";
       this.tabPage1.UseVisualStyleBackColor = true;
       // 
+      // SuchergebnisAbspielenButton
+      // 
+      this.SuchergebnisAbspielenButton.Location = new System.Drawing.Point(447, 174);
+      this.SuchergebnisAbspielenButton.Name = "SuchergebnisAbspielenButton";
+      this.SuchergebnisAbspielenButton.Size = new System.Drawing.Size(75, 23);
+      this.SuchergebnisAbspielenButton.TabIndex = 17;
+      this.SuchergebnisAbspielenButton.Text = "abspielen";
+      this.SuchergebnisAbspielenButton.UseVisualStyleBackColor = true;
+      this.SuchergebnisAbspielenButton.Click += new System.EventHandler(this.SuchergebnisAbspielenButton_Click);
+      // 
+      // SongListbox
+      // 
+      this.SongListbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+      this.SongListbox.FormattingEnabled = true;
+      this.SongListbox.Location = new System.Drawing.Point(90, 174);
+      this.SongListbox.Name = "SongListbox";
+      this.SongListbox.ScrollAlwaysVisible = true;
+      this.SongListbox.Size = new System.Drawing.Size(351, 342);
+      this.SongListbox.TabIndex = 16;
+      this.SongListbox.SelectedValueChanged += new System.EventHandler(this.SongListbox_SelectedValueChanged);
+      // 
       // label5
       // 
       this.label5.AutoSize = true;
@@ -152,7 +175,8 @@
       this.SongSuchenTextbox.Size = new System.Drawing.Size(351, 20);
       this.SongSuchenTextbox.TabIndex = 4;
       this.SongSuchenTextbox.TabStop = false;
-      this.SongSuchenTextbox.Text = "Volbeat";
+      this.SongSuchenTextbox.Text = "don\'t stop me now";
+      this.SongSuchenTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SongSuchenTextbox_KeyDown);
       // 
       // SongSuchenButton
       // 
@@ -266,26 +290,6 @@
       this.ResponseTextBox.TabIndex = 12;
       this.ResponseTextBox.TabStop = false;
       // 
-      // SongListbox
-      // 
-      this.SongListbox.FormattingEnabled = true;
-      this.SongListbox.Location = new System.Drawing.Point(90, 174);
-      this.SongListbox.Name = "SongListbox";
-      this.SongListbox.ScrollAlwaysVisible = true;
-      this.SongListbox.Size = new System.Drawing.Size(351, 95);
-      this.SongListbox.TabIndex = 16;
-      this.SongListbox.SelectedValueChanged += new System.EventHandler(this.SongListbox_SelectedValueChanged);
-      // 
-      // SuchergebnisAbspielenButton
-      // 
-      this.SuchergebnisAbspielenButton.Location = new System.Drawing.Point(447, 174);
-      this.SuchergebnisAbspielenButton.Name = "SuchergebnisAbspielenButton";
-      this.SuchergebnisAbspielenButton.Size = new System.Drawing.Size(75, 23);
-      this.SuchergebnisAbspielenButton.TabIndex = 17;
-      this.SuchergebnisAbspielenButton.Text = "abspielen";
-      this.SuchergebnisAbspielenButton.UseVisualStyleBackColor = true;
-      this.SuchergebnisAbspielenButton.Click += new System.EventHandler(this.SuchergebnisAbspielenButton_Click);
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -296,7 +300,10 @@
       this.Controls.Add(this.ConnectButton);
       this.Name = "MainForm";
       this.Text = "Demo Client";
+      this.Load += new System.EventHandler(this.MainForm_Load);
       this.ControlsPanel.ResumeLayout(false);
+      this.ControlsPanel.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.VolumeTrackbar)).EndInit();
       this.tabControl1.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage1.PerformLayout();
@@ -309,8 +316,6 @@
     }
 
     #endregion
-
-    private System.Windows.Forms.Button GetStatusButton;
     private System.Windows.Forms.Button PlayButton;
     private System.Windows.Forms.Button PauseButton;
     private System.Windows.Forms.Button ConnectButton;
@@ -332,6 +337,7 @@
     private System.Windows.Forms.Button SongSuchenButton;
     private System.Windows.Forms.ListBox SongListbox;
     private System.Windows.Forms.Button SuchergebnisAbspielenButton;
+    private System.Windows.Forms.TrackBar VolumeTrackbar;
   }
 }
 
